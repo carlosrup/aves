@@ -3,10 +3,9 @@
 import
   std/[
     os, osproc, sequtils, strformat, files, strutils, tables, algorithm, enumerate,
-    times,
+    times, jsonutils, json,
   ]
-import entry
-import jsony
+import ./[entry]
 
 let archivos =
   toSeq(walkDirRec("/home/carlosriaga/Pictures/pajareando", relative = false))
@@ -103,12 +102,10 @@ proc creaBaseAves(): seq[Entry] =
 
     result.add(Entry(id: id, name: name, lugar: lugar, date: date, path: path))
 
-proc dumpHook*(s: var string, v: DateTime) =
-  s.add '"'
-  s.add format(v, "yyyy-MM-dd hh:mm:ss")
-  s.add '"'
+proc toJsonHook*(a: DateTime): JsonNode =
+  newJString(a.format(entryDateFormat))
 
 let datosPath = "datos.json"
 if not fileExists(datosPath):
   let datos = creaBaseAves()
-  writeFile(datosPath, datos.toJson())
+  writeFile(datosPath, $toJson(datos))
