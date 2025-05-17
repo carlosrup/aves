@@ -6,3 +6,5 @@ type Entry* = object
   lugar*: string
   date*: DateTime
   path*: string
+
+const entryDateFormat* = "yyyy-MM-dd hh:mm:ss"
